@@ -4,7 +4,7 @@ import yargs from 'yargs';
 import { asyncify } from 'asyncbox';
 
 const DEFAULT_HOST = 'localhost';
-const DEFAULT_PORT = 7774;
+const DEFAULT_PORT = 7658;
 
 function main () {
   let port = yargs.argv.port || DEFAULT_PORT;
@@ -17,4 +17,4 @@ if (require.main === module) {
 }
 
 export default RokuDriver;
-export { startServer };
+export { RokuDriver, startServer };
