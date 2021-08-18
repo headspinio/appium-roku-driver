@@ -16,6 +16,7 @@ describe('RokuDriver', function () {
     driver = await wdio({
       hostname: HOST,
       port: PORT,
+      connectionRetryCount: 0,
       capabilities: CAPS,
     });
   });
@@ -38,6 +39,7 @@ describe('RokuDriver', function () {
   });
   it('should be able to get apps', async function () {
     const apps = await driver.execute('roku: getApps');
-    apps.should.have.length(15);
+    apps.should.have.length.above(10);
+    apps.map((a) => a.name).should.include('YouTube');
   });
 });
