@@ -16,6 +16,8 @@ describe('RokuDriver', function () {
     driver = await wdio({
       hostname: HOST,
       port: PORT,
+      isW3C: true,
+      isMobile: true,
       connectionRetryCount: 0,
       capabilities: CAPS,
     });
@@ -29,17 +31,24 @@ describe('RokuDriver', function () {
     } catch (ign) {}
   });
   it('should be able to press various remote keys', async function () {
-    await driver.execute('roku: pressKey', {key: 'Home'});
-    await driver.execute('roku: pressKey', {key: 'Right'});
-    await driver.execute('roku: pressKey', {key: 'Left'});
+    await driver.executeScript('roku: pressKey', [{key: 'Home'}]);
+    await driver.executeScript('roku: pressKey', [{key: 'Right'}]);
+    await driver.executeScript('roku: pressKey', [{key: 'Left'}]);
   });
   it('should be able to get device info', async function () {
-    const info = await driver.execute('roku: deviceInfo');
+    const info = await driver.executeScript('roku: deviceInfo', []);
     info['vendor-name'].should.eql('Roku');
   });
   it('should be able to get apps', async function () {
-    const apps = await driver.execute('roku: getApps');
+    const apps = await driver.executeScript('roku: getApps', []);
     apps.should.have.length.above(10);
     apps.map((a) => a.name).should.include('YouTube');
+  });
+  it.skip('should be able to launch an app', async function () {
+    // TODO wait for fix from wdio on appium proto
+    const apps = await driver.executeScript('roku: getApps', []);
+    const youTubeId = apps.filter((a) => a.name === 'YouTube')[0].id;
+    await driver.activateApp(youTubeId);
+    await driver.executeScript('roku: activeApp', []).should.eventually.eql(youTubeId);
   });
 });
