@@ -2,12 +2,16 @@ import { remote as wdio } from 'webdriverio';
 import { startServer } from '../..';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import path from 'path';
 chai.should();
 chai.use(chaiAsPromised);
 
 const HOST = '127.0.0.1';
 const PORT = 8765;
 const CAPS = require('./caps');
+
+const APP_ZIP = path.resolve(__dirname, '..', '..', '..', 'test', 'fixtures', 'hello-world.zip');
+const APP_NAME = 'Hello World';
 
 describe('RokuDriver', function () {
   let server, driver;
@@ -16,8 +20,6 @@ describe('RokuDriver', function () {
     driver = await wdio({
       hostname: HOST,
       port: PORT,
-      isW3C: true,
-      isMobile: true,
       connectionRetryCount: 0,
       capabilities: CAPS,
     });
@@ -50,5 +52,14 @@ describe('RokuDriver', function () {
     const youTubeId = apps.filter((a) => a.name === 'YouTube')[0].id;
     await driver.activateApp(youTubeId);
     await driver.executeScript('roku: activeApp', []).should.eventually.eql(youTubeId);
+  });
+  it.skip('should be able to sideload an app', async function () {
+    // TODO wait for fix from wdio on appium proto
+    await driver.removeApp();
+    let apps = await driver.executeScript('roku: getApps', []);
+    apps.filter((a) => a.name === APP_NAME).should.have.length(0);
+    await driver.installApp(APP_ZIP);
+    apps = await driver.executeScript('roku: getApps', []);
+    apps.filter((a) => a.name === APP_NAME).should.have.length(1);
   });
 });
