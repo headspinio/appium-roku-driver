@@ -104,4 +104,8 @@ describe('RokuDriver', function () {
     img.should.match(/^iVBOR/);
     img.length.should.be.above(1000);
   });
+  it('should not be able to take screenshot if dev app is not active', async function () {
+    await home();
+    await driver.takeScreenshot().should.eventually.be.rejectedWith(/not collect screenshot/);
+  });
 });
