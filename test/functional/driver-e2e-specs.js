@@ -15,15 +15,18 @@ const APP_NAME = 'Hello World';
 
 describe('RokuDriver', function () {
   let server, driver;
+
   before(async function () {
     server = await startServer(PORT, HOST);
     driver = await wdio({
       hostname: HOST,
       port: PORT,
       connectionRetryCount: 0,
+      logLevel: 'silent',
       capabilities: CAPS,
     });
   });
+
   after(async function () {
     try {
       await driver.deleteSession();
@@ -32,8 +35,22 @@ describe('RokuDriver', function () {
       await server.close();
     } catch (ign) {}
   });
-  it('should be able to press various remote keys', async function () {
+
+  async function home () {
     await driver.executeScript('roku: pressKey', [{key: 'Home'}]);
+  }
+
+  async function activateByName (appName) {
+    const apps = await driver.executeScript('roku: getApps', []);
+    const appId = apps.filter((a) => a.name === appName)[0].id;
+    // TODO replace with activateApp once wdio is fixed
+    //await driver.activateApp(appId);
+    await driver.executeScript('roku: activateApp', [{appId}]);
+    return appId;
+  }
+
+  it('should be able to press various remote keys', async function () {
+    await home();
     await driver.executeScript('roku: pressKey', [{key: 'Right'}]);
     await driver.executeScript('roku: pressKey', [{key: 'Left'}]);
   });
@@ -46,20 +63,33 @@ describe('RokuDriver', function () {
     apps.should.have.length.above(10);
     apps.map((a) => a.name).should.include('YouTube');
   });
-  it.skip('should be able to launch an app', async function () {
-    // TODO wait for fix from wdio on appium proto
-    const apps = await driver.executeScript('roku: getApps', []);
-    const youTubeId = apps.filter((a) => a.name === 'YouTube')[0].id;
-    await driver.activateApp(youTubeId);
-    await driver.executeScript('roku: activeApp', []).should.eventually.eql(youTubeId);
+  it('should be able to launch an app', async function () {
+    const youTubeId = await activateByName('YouTube');
+    const app = await driver.executeScript('roku: activeApp', []);
+    app.id.should.eql(youTubeId);
   });
-  it.skip('should be able to sideload an app', async function () {
-    // TODO wait for fix from wdio on appium proto
-    await driver.removeApp();
+  it('should be able to sideload an app', async function () {
+    // TODO replace with removeApp once wdio is fixed
+    await driver.executeScript('roku: removeApp', []);
     let apps = await driver.executeScript('roku: getApps', []);
     apps.filter((a) => a.name === APP_NAME).should.have.length(0);
-    await driver.installApp(APP_ZIP);
+    // TODO replace with installApp once wdio is fixed
+    await driver.executeScript('roku: installApp', [{appPath: APP_ZIP}]);
     apps = await driver.executeScript('roku: getApps', []);
     apps.filter((a) => a.name === APP_NAME).should.have.length(1);
+  });
+  it('should be able to get app ui', async function () {
+    await activateByName(APP_NAME);
+    await driver.executeScript('roku: appUI', []).should.eventually.include('<plugin id="dev" name="Hello World"/>');
+  });
+  it('should not be able to get app ui for non-dev apps', async function () {
+    await activateByName('YouTube');
+    await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
+      /Not authorized/);
+  });
+  it('should not get app UI if no active app', async function () {
+    await home();
+    await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
+      /No active app/);
   });
 });

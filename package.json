@@ -58,7 +58,7 @@
     "mocha": "mocha",
     "prepare": "gulp prepublish",
     "test": "gulp once",
-    "test:e2e": "gulp e2e-test",
+    "test:e2e": "_FORCE_LOGS=1 gulp e2e-test",
     "watch": "gulp watch",
     "coverage": "gulp coveralls",
     "precommit-msg": "echo 'Pre-commit checks...' && exit 0",
