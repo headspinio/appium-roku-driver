@@ -98,4 +98,10 @@ describe('RokuDriver', function () {
     source.should.match(/^<topscreen/);
     source.should.include('<plugin id="dev" name="Hello World"/>');
   });
+  it('should be able to take screenshot if dev app is active', async function () {
+    await activateByName(APP_NAME);
+    const img = await driver.takeScreenshot();
+    img.should.match(/^iVBOR/);
+    img.length.should.be.above(1000);
+  });
 });
