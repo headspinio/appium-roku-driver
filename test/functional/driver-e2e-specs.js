@@ -92,4 +92,10 @@ describe('RokuDriver', function () {
     await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
       /No active app/);
   });
+  it('should be able to get page source if app is active', async function () {
+    await activateByName(APP_NAME);
+    const source = await driver.getPageSource();
+    source.should.match(/^<topscreen/);
+    source.should.include('<plugin id="dev" name="Hello World"/>');
+  });
 });
