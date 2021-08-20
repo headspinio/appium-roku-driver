@@ -46,6 +46,7 @@
     "jimp": "^0.16.1",
     "js2xmlparser": "^4.0.1",
     "lodash": "^4.17.21",
+    "lru-cache": "^6.0.0",
     "request-promise": "^4.2.5",
     "source-map-support": "^0.5.5",
     "xml2js": "^0.4.23",

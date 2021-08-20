@@ -1,5 +1,6 @@
 import { remote as wdio } from 'webdriverio';
 import { startServer } from '../..';
+import { W3C_ELEMENT_KEY } from '@appium/base-driver/build/lib/constants';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import path from 'path';
@@ -49,63 +50,112 @@ describe('RokuDriver', function () {
     return appId;
   }
 
-  it('should be able to press various remote keys', async function () {
-    await home();
-    await driver.executeScript('roku: pressKey', [{key: 'Right'}]);
-    await driver.executeScript('roku: pressKey', [{key: 'Left'}]);
+  // this describe block should come first so we know the dev app is sideloaded for the rest of the
+  // blocks
+  describe('app management', function () {
+    it('should be able to get apps', async function () {
+      const apps = await driver.executeScript('roku: getApps', []);
+      apps.should.have.length.above(10);
+      apps.map((a) => a.name).should.include('YouTube');
+    });
+    it('should be able to launch an app', async function () {
+      const youTubeId = await activateByName('YouTube');
+      const app = await driver.executeScript('roku: activeApp', []);
+      app.id.should.eql(youTubeId);
+    });
+    it('should be able to sideload an app', async function () {
+      // TODO replace with removeApp once wdio is fixed
+      await driver.executeScript('roku: removeApp', []);
+      let apps = await driver.executeScript('roku: getApps', []);
+      apps.filter((a) => a.name === APP_NAME).should.have.length(0);
+      // TODO replace with installApp once wdio is fixed
+      await driver.executeScript('roku: installApp', [{appPath: APP_ZIP}]);
+      apps = await driver.executeScript('roku: getApps', []);
+      apps.filter((a) => a.name === APP_NAME).should.have.length(1);
+    });
   });
-  it('should be able to get device info', async function () {
-    const info = await driver.executeScript('roku: deviceInfo', []);
-    info['vendor-name'].should.eql('Roku');
+
+  describe('general', function () {
+    it('should be able to get page source if app is active', async function () {
+      await activateByName(APP_NAME);
+      const source = await driver.getPageSource();
+      source.should.match(/^<\?xml version="1.0"\?>\n<AppiumAUT>\n<topscreen>/);
+      source.should.include('<plugin id="dev" name="Hello World"/>');
+    });
+    it('should be able to take screenshot if dev app is active', async function () {
+      await activateByName(APP_NAME);
+      const img = await driver.takeScreenshot();
+      img.should.match(/^iVBOR/);
+      img.length.should.be.above(1000);
+    });
+    it('should not be able to take screenshot if dev app is not active', async function () {
+      await home();
+      await driver.takeScreenshot().should.eventually.be.rejectedWith(/not collect screenshot/);
+    });
   });
-  it('should be able to get apps', async function () {
-    const apps = await driver.executeScript('roku: getApps', []);
-    apps.should.have.length.above(10);
-    apps.map((a) => a.name).should.include('YouTube');
+
+  describe('roku features', function () {
+    it('should be able to press various remote keys', async function () {
+      await home();
+      await driver.executeScript('roku: pressKey', [{key: 'Right'}]);
+      await driver.executeScript('roku: pressKey', [{key: 'Left'}]);
+    });
+    it('should be able to get device info', async function () {
+      const info = await driver.executeScript('roku: deviceInfo', []);
+      info['vendor-name'].should.eql('Roku');
+    });
+    it('should be able to get app ui', async function () {
+      await activateByName(APP_NAME);
+      await driver.executeScript('roku: appUI', []).should.eventually.include('<plugin id="dev" name="Hello World"/>');
+    });
+    it('should not be able to get app ui for non-dev apps', async function () {
+      await activateByName('YouTube');
+      await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
+        /Not authorized/);
+    });
+    it('should not get app UI if no active app', async function () {
+      await home();
+      await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
+        /No active app/);
+    });
   });
-  it('should be able to launch an app', async function () {
-    const youTubeId = await activateByName('YouTube');
-    const app = await driver.executeScript('roku: activeApp', []);
-    app.id.should.eql(youTubeId);
-  });
-  it('should be able to sideload an app', async function () {
-    // TODO replace with removeApp once wdio is fixed
-    await driver.executeScript('roku: removeApp', []);
-    let apps = await driver.executeScript('roku: getApps', []);
-    apps.filter((a) => a.name === APP_NAME).should.have.length(0);
-    // TODO replace with installApp once wdio is fixed
-    await driver.executeScript('roku: installApp', [{appPath: APP_ZIP}]);
-    apps = await driver.executeScript('roku: getApps', []);
-    apps.filter((a) => a.name === APP_NAME).should.have.length(1);
-  });
-  it('should be able to get app ui', async function () {
-    await activateByName(APP_NAME);
-    await driver.executeScript('roku: appUI', []).should.eventually.include('<plugin id="dev" name="Hello World"/>');
-  });
-  it('should not be able to get app ui for non-dev apps', async function () {
-    await activateByName('YouTube');
-    await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
-      /Not authorized/);
-  });
-  it('should not get app UI if no active app', async function () {
-    await home();
-    await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
-      /No active app/);
-  });
-  it('should be able to get page source if app is active', async function () {
-    await activateByName(APP_NAME);
-    const source = await driver.getPageSource();
-    source.should.match(/^<topscreen/);
-    source.should.include('<plugin id="dev" name="Hello World"/>');
-  });
-  it('should be able to take screenshot if dev app is active', async function () {
-    await activateByName(APP_NAME);
-    const img = await driver.takeScreenshot();
-    img.should.match(/^iVBOR/);
-    img.length.should.be.above(1000);
-  });
-  it('should not be able to take screenshot if dev app is not active', async function () {
-    await home();
-    await driver.takeScreenshot().should.eventually.be.rejectedWith(/not collect screenshot/);
+
+  describe('elements', function () {
+    // in this section we don't want to use the typical webdriverio method for finding elements
+    // because we want access to the return value from the server, especially in case of an error,
+    // which we can only get by actually inspecting the returned message
+    async function find (query, strategy = 'xpath') {
+      const el = await driver.findElement(strategy, query);
+      if (el.error) {
+        throw new Error(el.message);
+      }
+      return el;
+    }
+
+    it('should not be able to find elements if dev app not active', async function () {
+      await home();
+      await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/No active app/);
+      await activateByName('YouTube');
+      await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/Not authorized/);
+    });
+    it('should be able to find a single element by xpath', async function () {
+      await activateByName(APP_NAME);
+      await find('//Label[@name="myLabel"]');
+    });
+    it('should throw not found if an element cannot be found', async function () {
+      await find('//Label[@name="doesntexist"]').should.eventually.be.rejectedWith(/could not be located/);
+    });
+    it('should not be able to find via a non-xpath strategy', async function () {
+      await find('#id', 'css selector').should.eventually.be.rejectedWith(/xpath/);
+    });
+    it('should find multiple elements', async function () {
+      const els = await driver.$$('//*');
+      els.should.have.length(7);
+    });
+    it('should not be able to find an element from another element', async function () {
+      const parent = await find('//topscreen');
+      await driver.findElementFromElement(parent[W3C_ELEMENT_KEY], 'xpath', '//Label')
+        .should.eventually.be.rejectedWith(/only find elements from the root/);
+    });
   });
 });

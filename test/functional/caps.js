@@ -12,7 +12,7 @@ const caps = {
   rokuUser,
   rokuPass,
   rokuHeaderHost,
-  keyCooldown: 2000,
+  keyCooldown: 1250,
   automationName: 'Roku',
   platformName: 'Roku'
 };
