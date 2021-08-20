@@ -11,8 +11,13 @@ const HOST = '127.0.0.1';
 const PORT = 8765;
 const CAPS = require('./caps');
 
-const APP_ZIP = path.resolve(__dirname, '..', '..', '..', 'test', 'fixtures', 'hello-world.zip');
+const FIXTURES = path.resolve(__dirname, '..', '..', '..', 'test', 'fixtures');
+
+const APP_ZIP = path.resolve(FIXTURES, 'hello-world.zip');
 const APP_NAME = 'Hello World';
+
+const VBUZZ_APP_ZIP = path.resolve(FIXTURES, 'myvideobuzz.zip');
+const VBUZZ_APP_NAME = 'MyVideoBuzz';
 
 async function startSession (capabilities) {
   return await wdio({
@@ -175,6 +180,22 @@ describe('RokuDriver', function () {
         const parent = await find('//topscreen');
         await driver.findElementFromElement(parent[W3C_ELEMENT_KEY], 'xpath', '//Label')
           .should.eventually.be.rejectedWith(/only find elements from the root/);
+      });
+    });
+
+
+    describe('interactions', function () {
+      it.only('should do a thing', async function () {
+        // TODO replace with installApp once wdio is fixed
+        await driver.executeScript('roku: installApp', [{appPath: VBUZZ_APP_ZIP}]);
+        await activateByName(VBUZZ_APP_NAME);
+        console.log(await driver.getPageSource());
+        await driver.executeScript('roku: pressKey', [{key: 'Right'}]);
+        console.log(await driver.getPageSource());
+        await driver.executeScript('roku: pressKey', [{key: 'Right'}]);
+        console.log(await driver.getPageSource());
+        await driver.executeScript('roku: pressKey', [{key: 'Down'}]);
+        console.log(await driver.getPageSource());
       });
     });
   });

@@ -4,3 +4,4 @@ package-lock.json
 *caps.json
 *.un~
 *.swp
+remote-caps.js
