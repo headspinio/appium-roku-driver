@@ -14,18 +14,22 @@ const CAPS = require('./caps');
 const APP_ZIP = path.resolve(__dirname, '..', '..', '..', 'test', 'fixtures', 'hello-world.zip');
 const APP_NAME = 'Hello World';
 
+async function startSession (capabilities) {
+  return await wdio({
+    hostname: HOST,
+    port: PORT,
+    connectionRetryCount: 0,
+    logLevel: 'silent',
+    capabilities,
+  });
+}
+
 describe('RokuDriver', function () {
   let server, driver;
 
   before(async function () {
     server = await startServer(PORT, HOST);
-    driver = await wdio({
-      hostname: HOST,
-      port: PORT,
-      connectionRetryCount: 0,
-      logLevel: 'silent',
-      capabilities: CAPS,
-    });
+    driver = await startSession(CAPS);
   });
 
   after(async function () {
@@ -49,6 +53,20 @@ describe('RokuDriver', function () {
     await driver.executeScript('roku: activateApp', [{appId}]);
     return appId;
   }
+
+  describe('sessions', function () {
+    it('should start a session with no app', async function () {
+      // relying on the before block above to have done this
+      await driver.executeScript('roku: activeApp', []).should.eventually.eql({name: 'Roku'});
+    });
+    it('should start a session with an app', async function () {
+      // kill the existing session first
+      await driver.deleteSession();
+      driver = await startSession({...CAPS, 'appium:app': APP_ZIP});
+      const app = await driver.executeScript('roku: activeApp', []);
+      app.name.should.eql(APP_NAME);
+    });
+  });
 
   // this describe block should come first so we know the dev app is sideloaded for the rest of the
   // blocks
@@ -132,30 +150,32 @@ describe('RokuDriver', function () {
       return el;
     }
 
-    it('should not be able to find elements if dev app not active', async function () {
-      await home();
-      await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/No active app/);
-      await activateByName('YouTube');
-      await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/Not authorized/);
-    });
-    it('should be able to find a single element by xpath', async function () {
-      await activateByName(APP_NAME);
-      await find('//Label[@name="myLabel"]');
-    });
-    it('should throw not found if an element cannot be found', async function () {
-      await find('//Label[@name="doesntexist"]').should.eventually.be.rejectedWith(/could not be located/);
-    });
-    it('should not be able to find via a non-xpath strategy', async function () {
-      await find('#id', 'css selector').should.eventually.be.rejectedWith(/xpath/);
-    });
-    it('should find multiple elements', async function () {
-      const els = await driver.$$('//*');
-      els.should.have.length(7);
-    });
-    it('should not be able to find an element from another element', async function () {
-      const parent = await find('//topscreen');
-      await driver.findElementFromElement(parent[W3C_ELEMENT_KEY], 'xpath', '//Label')
-        .should.eventually.be.rejectedWith(/only find elements from the root/);
+    describe('finding', function () {
+      it('should not be able to find elements if dev app not active', async function () {
+        await home();
+        await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/No active app/);
+        await activateByName('YouTube');
+        await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/Not authorized/);
+      });
+      it('should be able to find a single element by xpath', async function () {
+        await activateByName(APP_NAME);
+        await find('//Label[@name="myLabel"]');
+      });
+      it('should throw not found if an element cannot be found', async function () {
+        await find('//Label[@name="doesntexist"]').should.eventually.be.rejectedWith(/could not be located/);
+      });
+      it('should not be able to find via a non-xpath strategy', async function () {
+        await find('#id', 'css selector').should.eventually.be.rejectedWith(/xpath/);
+      });
+      it('should find multiple elements', async function () {
+        const els = await driver.$$('//*');
+        els.should.have.length(7);
+      });
+      it('should not be able to find an element from another element', async function () {
+        const parent = await find('//topscreen');
+        await driver.findElementFromElement(parent[W3C_ELEMENT_KEY], 'xpath', '//Label')
+          .should.eventually.be.rejectedWith(/only find elements from the root/);
+      });
     });
   });
 });
