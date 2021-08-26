@@ -102,3 +102,7 @@ await driver.executeScript('roku: pressKey', [{key: 'Home'}])
 ## Contributing
 
 We would love for you to contribute to this project! Check out the [contribution guide](CONTRIBUTING.md) for more info.
+
+## Credits
+
+Development for this driver is sponsored by [HeadSpin](https://headspin.io).
