@@ -1,6 +1,6 @@
 # Appium Roku Driver
 
-This project is an Appium 2.x driver for automation of Roku dev channels (in the Roku world, "channel" means "app").
+This project is an Appium 2.x driver for automation of Roku channels (in the Roku world, "channel" means "app").
 
 ## Background
 
@@ -55,9 +55,49 @@ appium driver install --source=npm appium-roku-driver
 |`appium:rokuHeaderHost`|string|The IP of the Roku device on its local network (usually the same as `rokuHost` unless you are tunneling or connecting via DNS)|Yes|
 |`appium:keyCooldown`|number|The number of milliseconds to wait between remote key presses. Can be useful for waiting to ensure the UI catches up with the remote. Defaults to 0.|No|
 
-## Implemented Commands
+## Supported Commands
+
+The following table details the commands available via this driver. The command name is simply the internal Appium command name; it is not necessarily what you would call from your client code. Visit your client's documentation to see how you would call these commands from, e.g., the Java or Python client.
+
+|Command|Parameters|Description|
+|-------|----------|-----------|
+|`createSession`||Start an Appium session on the Roku. If no `appium:app` capability is provided, the session will simply begin at the Home screen. If an `appium:app` capability is provided, the app will be sideloaded and launched.|
+|`deleteSession`||Stop the Appium session, which basically entails going to the home screen.|
+|`installApp`|`appPath`|Sideload the app found at `appPath` to the Roku. Installing an app causes the Roku to remove any previously sideloaded app.|
+|`removeApp`|`appId`|Remove the app whose id is `appId`. The id should be the one returned in the call to `roku: getApps` (see below)|
+|`activateApp`|`appId`|Launch the app whose id is `appId`.|
+|`getPageSource`||Return the XML representation of the current app hierarchy. Only available if the sideloaded dev app is active.|
+|`getScreenshot`||Return a base64-encoded string representing a PNG screenshot image. Only available if the sideloaded dev app is active.|`findElement`|`strategy`, `selector`|Find an element in the app hierarchy matching `selector`. Only the `xpath` strategy is supported. If no matching element is found, the driver will respond with a `NoSuchElement` error.|
+|`findElements`|`strategy`, `selector`|Find a (possibly-empty) list of elements in the app hierarchy matching `selector`. Only the `xpath` strategy is supported.|
+
+### Element Commands
+
+Once you have an element ID, you can run these commands as well:
+
+|Command|Parameters|Description|
+|-------|----------|-----------|
+|`click`|`elementId`|Check whether the element represented by `elementId` is marked as focused in the source XML. If not, determine which remote keypress will move the focus closer to the desired element. Repeat this process until the element is focused, and press the 'Select' button.|
+
+A note about stale element references: when you attempt to `click` an element, the driver will retrieve the current app source XML, and attempt to re-find the element based on the original locator criteria. If the find results in an XML node that matches the element reference, all is well. If not, the driver understands the element hierarchy to have changed and will respond with a Stale Element Exception.
 
 ### Roku Commands
+
+Using the Roku APIs listed above, we have access to functionality that goes beyond standard Appium protocol commands. This extra functionality is made available via the `executeScript` command. This command takes a string (the script), and an array of objects (the arguments for the script) as parameters.
+
+These special Roku commands all follow the same format: their script string should start with `roku: `, and they should have a single argument in the argument list, which is an object whose values represent the command arguments. Let's take, for example, the `roku: pressKey` command. To press the `Home` key, we need to execute the `roku: pressKey` script, and the argument should be an array with a single element, namely an object of the form `{"key": "Home"}`. In the WebdriverIO client bindings, this would look like:
+
+```js
+await driver.executeScript('roku: pressKey', [{key: 'Home'}])
+```
+
+(And of course it would look different in every other language/library).
+
+|Command|Parameters|Description|
+|-------|----------|-----------|
+|`roku: pressKey`|`key`|Press the remote key whose value matches `key` (must be one of the [supported key values](https://developer.roku.com/en-ca/docs/developer-program/debugging/external-control-api.md#keypress-key-values) from the Roku documentation)|
+|`roku: deviceInfo`||Get information about the Roku device|
+|`roku: getApps`||Get a list of apps installed on the device. The response will be a list of objects with the following keys: `id`, `type`, `subtype`, `version`, and `name`.|
+|`roku: activeApp`||Get information about the active app, in the same format as `roku: getApps`.|
 
 ## Contributing
 
