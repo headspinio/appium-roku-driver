@@ -105,4 +105,5 @@ We would love for you to contribute to this project! Check out the [contribution
 
 ## Credits
 
-Development for this driver is sponsored by [HeadSpin](https://headspin.io).
+* Development for this driver is sponsored by [HeadSpin](https://headspin.io).
+* Special thanks to [@sharkyStudy](https://github.com/sharkyStudy) for help with the NPM package as well as developing another implementation in parallel before joining to assist with this project.
