@@ -34,7 +34,9 @@
     "index.js",
     "lib",
     "build/index.js",
-    "build/lib"
+    "build/lib",
+    "LICENSE",
+    "README.md"
   ],
   "dependencies": {
     "@appium/base-driver": "^8.0.0-beta.7",
