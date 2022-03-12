@@ -94,7 +94,7 @@ await driver.executeScript('roku: pressKey', [{key: 'Home'}])
 
 |Command|Parameters|Description|
 |-------|----------|-----------|
-|`roku: pressKey`|`key`|Press the remote key whose value matches `key` (must be one of the [supported key values](https://developer.roku.com/en-ca/docs/developer-program/debugging/external-control-api.md#keypress-key-values) from the Roku documentation)|
+|`roku: pressKey`|`key`|Press the remote key whose value matches `key` (must be one of the [supported key values](https://developer.roku.com/en-ca/docs/developer-program/debugging/external-control-api.md#keypress-key-values) from the Roku documentation). As addressed in the documentation, Roku TVs also support additioanl keys such as `PowerOff` and `PowerOn`. |
 |`roku: deviceInfo`||Get information about the Roku device|
 |`roku: getApps`||Get a list of apps installed on the device. The response will be a list of objects with the following keys: `id`, `type`, `subtype`, `version`, and `name`.|
 |`roku: activeApp`||Get information about the active app, in the same format as `roku: getApps`.|
