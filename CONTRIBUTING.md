@@ -36,4 +36,4 @@ By default, the E2E tests don't know how to connect to your Roku device, so you'
 
 ## Proposing Changes
 
-Once you've got your change coded up, and you've added tests, run lint, etc..., go ahead and [make a pull request](https://github.com/projectxyzio/appium-roku-driver/pulls)!
+Once you've got your change coded up, and you've added tests, run lint, etc..., go ahead and [make a pull request](https://github.com/headspinio/appium-roku-driver/pulls)!

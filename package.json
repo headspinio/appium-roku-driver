@@ -10,10 +10,10 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/projectxyzio/appium-roku-driver.git"
+    "url": "https://github.com/headspinio/appium-roku-driver.git"
   },
   "bugs": {
-    "url": "https://github.com/projectxyzio/appium-roku-driver/issues"
+    "url": "https://github.com/headspinio/appium-roku-driver/issues"
   },
   "appium": {
     "driverName": "roku",
