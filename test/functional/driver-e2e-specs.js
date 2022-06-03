@@ -1,11 +1,13 @@
 import { remote as wdio } from 'webdriverio';
 import {main as startAppium} from 'appium';
-import { W3C_ELEMENT_KEY } from '@appium/base-driver/build/lib/constants';
+import { util } from 'appium/support';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import path from 'path';
 chai.should();
 chai.use(chaiAsPromised);
+
+const { W3C_WEB_ELEMENT_IDENTIFIER } = util;
 
 const HOST = '127.0.0.1';
 const PORT = 8765;
@@ -178,7 +180,7 @@ describe('RokuDriver', function () {
       });
       it('should not be able to find an element from another element', async function () {
         const parent = await find('//topscreen');
-        await driver.findElementFromElement(parent[W3C_ELEMENT_KEY], 'xpath', '//Label')
+        await driver.findElementFromElement(parent[W3C_WEB_ELEMENT_IDENTIFIER], 'xpath', '//Label')
           .should.eventually.be.rejectedWith(/only find elements from the root/);
       });
     });
