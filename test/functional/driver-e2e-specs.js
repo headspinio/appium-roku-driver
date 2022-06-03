@@ -1,5 +1,5 @@
 import { remote as wdio } from 'webdriverio';
-import { startServer } from '../..';
+import {main as startAppium} from 'appium';
 import { W3C_ELEMENT_KEY } from '@appium/base-driver/build/lib/constants';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -33,7 +33,7 @@ describe('RokuDriver', function () {
   let server, driver;
 
   before(async function () {
-    server = await startServer(PORT, HOST);
+    server = await startAppium({address: HOST, port: PORT});
     driver = await startSession(CAPS);
   });
 

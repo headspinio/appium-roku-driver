@@ -1,4 +1,4 @@
-import RokuDriver from '../..';
+import RokuDriver from '../../lib/driver';
 import chai from 'chai';
 
 const should = chai.should();
