@@ -37,7 +37,7 @@ We are limited to working with the tools that Roku has provided, which means man
 With Appium 2.0's driver CLI, installation is as easy as:
 
 ```
-appium driver install --source=npm appium-roku-driver
+appium driver install --source=npm @headspinio/appium-roku-driver
 ```
 
 ## Capabilities
