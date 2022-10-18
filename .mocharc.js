@@ -1,5 +1,6 @@
 'use strict';
 
 module.exports = {
-  timeout: 600000
+  require: [require.resolve('./test/setup.js')],
+  color: true,
 };

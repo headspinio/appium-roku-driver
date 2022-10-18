@@ -1,2 +1,4 @@
 WebDriverAgent
 coverage
+*.ts
+build

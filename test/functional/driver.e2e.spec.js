@@ -1,19 +1,15 @@
-import { remote as wdio } from 'webdriverio';
+import {remote as wdio} from 'webdriverio';
 import {main as startAppium} from 'appium';
-import { util } from 'appium/support';
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
+import {util} from 'appium/support';
 import path from 'path';
-chai.should();
-chai.use(chaiAsPromised);
 
-const { W3C_WEB_ELEMENT_IDENTIFIER } = util;
+const {W3C_WEB_ELEMENT_IDENTIFIER} = util;
 
 const HOST = '127.0.0.1';
 const PORT = 8765;
 const CAPS = require('./caps');
 
-const FIXTURES = path.resolve(__dirname, '..', '..', '..', 'test', 'fixtures');
+const FIXTURES = path.resolve(__dirname, '..', 'fixtures');
 
 const APP_ZIP = path.resolve(FIXTURES, 'hello-world.zip');
 const APP_NAME = 'Hello World';
@@ -21,7 +17,7 @@ const APP_NAME = 'Hello World';
 const VBUZZ_APP_ZIP = path.resolve(FIXTURES, 'myvideobuzz.zip');
 const VBUZZ_APP_NAME = 'MyVideoBuzz';
 
-async function startSession (capabilities) {
+async function startSession(capabilities) {
   return await wdio({
     hostname: HOST,
     port: PORT,
@@ -48,11 +44,11 @@ describe('RokuDriver', function () {
     } catch (ign) {}
   });
 
-  async function home () {
+  async function home() {
     await driver.executeScript('roku: pressKey', [{key: 'Home'}]);
   }
 
-  async function activateByName (appName) {
+  async function activateByName(appName) {
     const apps = await driver.executeScript('roku: getApps', []);
     const appId = apps.filter((a) => a.name === appName)[0].id;
     // TODO replace with activateApp once wdio is fixed
@@ -131,17 +127,21 @@ describe('RokuDriver', function () {
     });
     it('should be able to get app ui', async function () {
       await activateByName(APP_NAME);
-      await driver.executeScript('roku: appUI', []).should.eventually.include('<plugin id="dev" name="Hello World"/>');
+      await driver
+        .executeScript('roku: appUI', [])
+        .should.eventually.include('<plugin id="dev" name="Hello World"/>');
     });
     it('should not be able to get app ui for non-dev apps', async function () {
       await activateByName('YouTube');
-      await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
-        /Not authorized/);
+      await driver
+        .executeScript('roku: appUI', [])
+        .should.eventually.be.rejectedWith(/Not authorized/);
     });
     it('should not get app UI if no active app', async function () {
       await home();
-      await driver.executeScript('roku: appUI', []).should.eventually.be.rejectedWith(
-        /No active app/);
+      await driver
+        .executeScript('roku: appUI', [])
+        .should.eventually.be.rejectedWith(/No active app/);
     });
   });
 
@@ -149,7 +149,7 @@ describe('RokuDriver', function () {
     // in this section we don't want to use the typical webdriverio method for finding elements
     // because we want access to the return value from the server, especially in case of an error,
     // which we can only get by actually inspecting the returned message
-    async function find (query, strategy = 'xpath') {
+    async function find(query, strategy = 'xpath') {
       const el = await driver.findElement(strategy, query);
       if (el.error) {
         throw new Error(el.message);
@@ -162,14 +162,18 @@ describe('RokuDriver', function () {
         await home();
         await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/No active app/);
         await activateByName('YouTube');
-        await driver.findElement('xpath', '//*').should.eventually.be.rejectedWith(/Not authorized/);
+        await driver
+          .findElement('xpath', '//*')
+          .should.eventually.be.rejectedWith(/Not authorized/);
       });
       it('should be able to find a single element by xpath', async function () {
         await activateByName(APP_NAME);
         await find('//Label[@name="myLabel"]');
       });
       it('should throw not found if an element cannot be found', async function () {
-        await find('//Label[@name="doesntexist"]').should.eventually.be.rejectedWith(/could not be located/);
+        await find('//Label[@name="doesntexist"]').should.eventually.be.rejectedWith(
+          /could not be located/
+        );
       });
       it('should not be able to find via a non-xpath strategy', async function () {
         await find('#id', 'css selector').should.eventually.be.rejectedWith(/xpath/);
@@ -180,11 +184,11 @@ describe('RokuDriver', function () {
       });
       it('should not be able to find an element from another element', async function () {
         const parent = await find('//topscreen');
-        await driver.findElementFromElement(parent[W3C_WEB_ELEMENT_IDENTIFIER], 'xpath', '//Label')
+        await driver
+          .findElementFromElement(parent[W3C_WEB_ELEMENT_IDENTIFIER], 'xpath', '//Label')
           .should.eventually.be.rejectedWith(/only find elements from the root/);
       });
     });
-
 
     describe('interactions', function () {
       it('should find and auto-navigate to an element when a click is requested', async function () {
