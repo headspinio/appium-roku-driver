@@ -1,0 +1,32 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "14"
+        },
+        "shippedProposals": true
+      }
+    ]
+  ],
+  "plugins": ["source-map-support"],
+  "comments": false,
+  "sourceMaps": "both",
+  "env": {
+    "coverage": {
+      "plugins": [
+        [
+          "istanbul",
+          {
+            "exclude": ["test", "build"]
+          }
+        ]
+      ]
+    },
+    "test": {
+      "retainLines": true,
+      "comments": true
+    }
+  }
+}

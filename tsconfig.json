@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "esModuleInterop": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "module": "es2022",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "target": "es2015",
+    "types": ["node", "mocha", "chai", "chai-as-promised", "sinon-chai", "webdriverio/async"],
+    "outDir": "build"
+  },
+  "include": ["lib"]
+}
