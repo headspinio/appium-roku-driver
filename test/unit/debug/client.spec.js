@@ -25,8 +25,11 @@ describe('RokuDebugClient', function () {
 
     telnet = new EventEmitter();
 
-    const socket = ['chunk', 'another chunk', 'yet another chunk'];
-    socket.setEncoding = sandbox.stub();
+    class MockSocket extends Array {
+      setEncoding = sandbox.stub()
+    }
+
+    const socket = new MockSocket('chunk', 'another chunk', 'yet another chunk');
 
     Object.assign(telnet, {
       connect: sandbox.stub().resolves(),
@@ -56,6 +59,7 @@ describe('RokuDebugClient', function () {
 
     describe('when not provided a host parameter', function () {
       it('should throw', function () {
+        // @ts-expect-error
         expect(() => new RokuDebugClient(), 'to throw', 'host is required');
       });
     });
@@ -189,8 +193,9 @@ describe('RokuDebugClient', function () {
   describe('AsyncIterable behavior', function () {
     // https://tc39.es/proposal-array-from-async/ would be handy here
 
-    /** @type {RokuDebugClient} */
+    /** @type {import('../../../lib/debug/client').RokuDebugClient} */
     let client;
+
     beforeEach(function () {
       client = new RokuDebugClient('localhost');
     });

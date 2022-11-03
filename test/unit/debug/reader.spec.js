@@ -16,10 +16,9 @@ describe('FileReader', function () {
   /** @type {Buffer} */
   let buf;
 
-  /** @type {import('node:fs/promises').FileHandle} */
   let fh;
 
-  /** @type {{open: sinon.SinonStub<void, typeof fh>}} */
+  /** @type {{open: sinon.SinonStub<any[], typeof fh>}} */
   let MockFs;
 
   beforeEach(function () {
@@ -65,6 +64,7 @@ describe('FileReader', function () {
 
     describe('when not provided a logPath parameter', function () {
       it('should throw', function () {
+        // @ts-expect-error
         expect(() => new FileReader(), 'to throw a', TypeError);
       });
     });

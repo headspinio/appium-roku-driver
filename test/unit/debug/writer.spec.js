@@ -17,7 +17,7 @@ describe('RokuDebugWriter', function () {
 
   let mockClient;
 
-  /** @type {Writable} */
+  /** @type {stream.Writable} */
   let writable;
 
   beforeEach(function () {
@@ -104,7 +104,7 @@ describe('RokuDebugWriter', function () {
   });
 
   describe('instance property', function () {
-    /** @type {RokuDebugWriter} */
+    /** @type {import('../../../lib/debug/writer').RokuDebugWriter} */
     let writer;
 
     beforeEach(function () {
@@ -117,7 +117,7 @@ describe('RokuDebugWriter', function () {
   });
 
   describe('instance method', function () {
-    /** @type {RokuDebugWriter} */
+    /** @type {import('../../../lib/debug/writer').RokuDebugWriter} */
     let writer;
 
     beforeEach(function () {
