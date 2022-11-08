@@ -1,16 +1,16 @@
 import {remote as wdio} from 'webdriverio';
+import {TEST_HOST} from './helpers';
 import {main as startAppium} from 'appium';
 import {util} from 'appium/support';
 import path from 'path';
 import unexpected from 'unexpected';
+import {CAPS} from './caps';
 
 const expect = unexpected.clone();
 
 const {W3C_WEB_ELEMENT_IDENTIFIER} = util;
 
-const HOST = '127.0.0.1';
 const PORT = 8765;
-const CAPS = require('./caps');
 
 const FIXTURES = path.resolve(__dirname, '..', 'fixtures');
 
@@ -22,7 +22,7 @@ const VBUZZ_APP_NAME = 'MyVideoBuzz';
 
 async function startSession(capabilities) {
   return await wdio({
-    hostname: HOST,
+    hostname: TEST_HOST,
     port: PORT,
     connectionRetryCount: 0,
     logLevel: 'silent',
@@ -34,7 +34,7 @@ describe('RokuDriver', function () {
   let server, driver;
 
   before(async function () {
-    server = await startAppium({address: HOST, port: PORT});
+    server = await startAppium({address: TEST_HOST, port: PORT});
     driver = await startSession(CAPS);
   });
 

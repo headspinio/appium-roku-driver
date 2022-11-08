@@ -1,11 +1,16 @@
-const rokuHost = process.env.RK_HOST || 'localhost';
-const rokuEcpPort = (process.env.RK_PORT && parseInt(process.env.RK_PORT, 10)) || 8060;
-const rokuWebPort = parseInt(process.env.RK_WEB_PORT || '80', 10);
-const rokuUser = process.env.RK_USER || 'rokudev';
-const rokuPass = process.env.RK_PASS || '';
-const rokuHeaderHost = process.env.RK_HEADER_HOST || rokuHost;
+import _ from 'lodash';
+import {Env} from '@humanwhocodes/env';
 
-const caps = {
+const env = new Env();
+
+const rokuHost = env.get('RK_HOST', 'localhost');
+const rokuEcpPort = _.parseInt(env.get('RK_PORT', '8060'));
+const rokuWebPort = _.parseInt(env.get('RK_WEB_PORT', '80'));
+const rokuUser = env.get('RK_USER', 'rokudev');
+const rokuPass = env.get('RK_PASS', '');
+const rokuHeaderHost = env.get('RK_READER_HOST', rokuHost);
+
+const baseCaps = {
   rokuHost,
   rokuEcpPort,
   rokuWebPort,
@@ -14,11 +19,9 @@ const caps = {
   rokuHeaderHost,
   keyCooldown: 1250,
   automationName: 'Roku',
-  platformName: 'Roku'
 };
 
-export default Object.keys(caps).reduce((newCaps, key) => {
-  newCaps[`appium:${key}`] = caps[key];
-  return newCaps;
-}, {});
-
+export const CAPS = {
+  ..._.mapKeys(baseCaps, (value, key) => `appium:${key}`),
+  platformName: 'Roku',
+};

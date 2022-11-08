@@ -10,7 +10,7 @@ module.exports = (wallaby) => {
       type: 'node',
     },
     files: [
-      './lib/**/*.js'
+      './lib/**/*.js',
     ],
     testFramework: 'mocha',
     tests: [

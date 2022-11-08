@@ -88,6 +88,7 @@
     "@babel/core": "7.18.10",
     "@babel/preset-env": "7.19.4",
     "@babel/register": "7.18.9",
+    "@humanwhocodes/env": "2.2.2",
     "@types/babel__register": "7.17.0",
     "@types/bluebird": "3.5.37",
     "@types/chai": "4.3.4",
