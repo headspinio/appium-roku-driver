@@ -92,7 +92,7 @@
     "@types/mocha": "9.1.1",
     "@types/request-promise": "4.1.48",
     "@types/sinon-chai": "3.2.9",
-    "@types/teen_process": "1.16.1",
+    "@types/teen_process": "2.0.0",
     "@types/xml2js": "0.4.11",
     "appium": "2.0.0-beta.46",
     "axios": "0.27.2",
