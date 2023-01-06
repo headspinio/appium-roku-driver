@@ -65,7 +65,7 @@ The following table details the commands available via this driver. The command 
 |`deleteSession`||Stop the Appium session, which basically entails going to the home screen.|
 |`installApp`|`appPath`|Sideload the app found at `appPath` to the Roku. Installing an app causes the Roku to remove any previously sideloaded app.|
 |`removeApp`|`appId`|Remove the app whose id is `appId`. The id should be the one returned in the call to `roku: getApps` (see below)|
-|`activateApp`|`appId`|Launch the app whose id is `appId`.|
+|`activateApp`|`appId`, `contentId` (optional), `mediaType` (optional)|Launch the app whose id is `appId`. You can optionally include content ID and media type parameters as defined in Roku's [deep linking docs](https://developer.roku.com/en-ca/docs/developer-program/debugging/external-control-api.md#deep-linking-to-a-channel) (you do not need to URL-encode the value of `contentId`; the driver will do that for you).|
 |`getPageSource`||Return the XML representation of the current app hierarchy. Only available if the sideloaded dev app is active.|
 |`getScreenshot`||Return a base64-encoded string representing a PNG screenshot image. Only available if the sideloaded dev app is active.|`findElement`|`strategy`, `selector`|Find an element in the app hierarchy matching `selector`. Only the `xpath` strategy is supported. If no matching element is found, the driver will respond with a `NoSuchElement` error.|
 |`findElements`|`strategy`, `selector`|Find a (possibly-empty) list of elements in the app hierarchy matching `selector`. Only the `xpath` strategy is supported.|
