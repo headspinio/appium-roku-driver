@@ -77,6 +77,7 @@ Once you have an element ID, you can run these commands as well:
 |Command|Parameters|Description|
 |-------|----------|-----------|
 |`click`|`elementId`|Check whether the element represented by `elementId` is marked as focused in the source XML. If not, determine which remote keypress will move the focus closer to the desired element. Repeat this process until the element is focused, and press the 'Select' button.|
+|`sendKeys`|string|Set the given value to the element|
 
 A note about stale element references: when you attempt to `click` an element, the driver will retrieve the current app source XML, and attempt to re-find the element based on the original locator criteria. If the find results in an XML node that matches the element reference, all is well. If not, the driver understands the element hierarchy to have changed and will respond with a Stale Element Exception.
 
