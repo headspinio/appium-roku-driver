@@ -68,7 +68,7 @@
     "blessed": "0.1.81",
     "bluebird": "3.7.2",
     "jimp": "0.16.2",
-    "js2xmlparser": "4.0.2",
+    "js2xmlparser": "5.0.0",
     "lodash": "4.17.21",
     "lru-cache": "7.14.1",
     "request": "2.88.2",
