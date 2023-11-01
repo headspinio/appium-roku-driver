@@ -12,7 +12,8 @@
     "resolveJsonModule": true,
     "target": "es2015",
     "types": ["node", "mocha", "chai", "chai-as-promised", "sinon-chai", "webdriverio/async"],
-    "outDir": "build"
+    "outDir": "build",
+    "skipLibCheck": true,
   },
   "include": ["lib"]
 }

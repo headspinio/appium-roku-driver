@@ -75,7 +75,7 @@
     "request-promise": "4.2.6",
     "source-map-support": "0.5.21",
     "xml2js": "0.4.23",
-    "xpath": "0.0.32",
+    "xpath": "0.0.33",
     "yargs": "17.6.2"
   },
   "devDependencies": {
