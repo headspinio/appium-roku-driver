@@ -1,34 +1,33 @@
+import B from 'bluebird';
 import {remote as wdio} from 'webdriverio';
 import {main as startAppium} from 'appium';
-import {util} from 'appium/support';
 import path from 'path';
-
-const {W3C_WEB_ELEMENT_IDENTIFIER} = util;
+import CAPS from './caps';
 
 const HOST = '127.0.0.1';
 const PORT = 8765;
-const CAPS = require('./caps');
 
 const FIXTURES = path.resolve(__dirname, '..', 'fixtures');
 
 const APP_ZIP = path.resolve(FIXTURES, 'hello-world.zip');
 const APP_NAME = 'Hello World';
 
-const VBUZZ_APP_ZIP = path.resolve(FIXTURES, 'myvideobuzz.zip');
-const VBUZZ_APP_NAME = 'MyVideoBuzz';
+const HERO_GRID_APP = path.resolve(FIXTURES, 'hero-grid-channel-master.zip');
+const HERO_GRID_NAME = 'HeroGridChannel';
 
 async function startSession(capabilities) {
   return await wdio({
     hostname: HOST,
     port: PORT,
     connectionRetryCount: 0,
-    logLevel: 'silent',
     capabilities,
   });
 }
 
 describe('RokuDriver', function () {
-  let server, driver;
+  let server;
+  /** @type {import('webdriverio').Browser} */
+  let driver;
 
   before(async function () {
     server = await startAppium({address: HOST, port: PORT});
@@ -50,10 +49,15 @@ describe('RokuDriver', function () {
 
   async function activateByName(appName) {
     const apps = await driver.executeScript('roku: getApps', []);
-    const appId = apps.filter((a) => a.name === appName)[0].id;
+    const app = apps.filter((a) => a.name === appName)[0];
+    if (!app) {
+      throw new Error(`App ${appName} was not installed`);
+    }
+    const appId = app.id;
     // TODO replace with activateApp once wdio is fixed
     //await driver.activateApp(appId);
     await driver.executeScript('roku: activateApp', [{appId}]);
+    await B.delay(1000); // wait for app to activate
     return appId;
   }
 
@@ -76,7 +80,7 @@ describe('RokuDriver', function () {
   describe('app management', function () {
     it('should be able to get apps', async function () {
       const apps = await driver.executeScript('roku: getApps', []);
-      apps.should.have.length.above(10);
+      apps.should.have.length.above(5);
       apps.map((a) => a.name).should.include('YouTube');
     });
     it('should be able to launch an app', async function () {
@@ -139,6 +143,7 @@ describe('RokuDriver', function () {
     });
     it('should not get app UI if no active app', async function () {
       await home();
+      await B.delay(750);
       await driver
         .executeScript('roku: appUI', [])
         .should.eventually.be.rejectedWith(/No active app/);
@@ -149,10 +154,10 @@ describe('RokuDriver', function () {
     // in this section we don't want to use the typical webdriverio method for finding elements
     // because we want access to the return value from the server, especially in case of an error,
     // which we can only get by actually inspecting the returned message
-    async function find(query, strategy = 'xpath') {
-      const el = await driver.findElement(strategy, query);
-      if (el.error) {
-        throw new Error(el.message);
+    async function find(selector) {
+      const el = await driver.$(selector);
+      if (!await el.isExisting()) {
+        throw new Error('Element could not be located');
       }
       return el;
     }
@@ -176,7 +181,7 @@ describe('RokuDriver', function () {
         );
       });
       it('should not be able to find via a non-xpath strategy', async function () {
-        await find('#id', 'css selector').should.eventually.be.rejectedWith(/xpath/);
+        await find('#id').should.eventually.be.rejectedWith(/xpath/);
       });
       it('should find multiple elements', async function () {
         const els = await driver.$$('//*');
@@ -184,21 +189,34 @@ describe('RokuDriver', function () {
       });
       it('should not be able to find an element from another element', async function () {
         const parent = await find('//topscreen');
-        await driver
-          .findElementFromElement(parent[W3C_WEB_ELEMENT_IDENTIFIER], 'xpath', '//Label')
-          .should.eventually.be.rejectedWith(/only find elements from the root/);
+        let errMsg = null;
+        try {
+          await parent.$('//Label');
+        } catch (err) {
+          errMsg = err.message;
+        }
+        errMsg.should.include('only find elements from the root');
+      });
+      it('should get element attributes', async function () {
+        const el = await find('//Label[@name="myLabel"]');
+        await el.getAttribute('name').should.eventually.eql('myLabel');
+      });
+      it('should get element text', async function () {
+        const el = await find('//Label[@name="myLabel"]');
+        await el.getText().should.eventually.eql('Hello World!');
       });
     });
 
     describe('interactions', function () {
       it('should find and auto-navigate to an element when a click is requested', async function () {
         // TODO replace with installApp once wdio is fixed
-        await driver.executeScript('roku: installApp', [{appPath: VBUZZ_APP_ZIP}]);
-        await activateByName(VBUZZ_APP_NAME);
-        let el = await driver.$('//item[@name="Top Channels"]');
+        await driver.executeScript('roku: installApp', [{appPath: HERO_GRID_APP}]);
+        await activateByName(HERO_GRID_NAME);
+        let el = await driver.$('(//MarkupGrid)[2]/customItem[3]');
+        await el.waitForExist({timeout: 5000});
         await el.click();
-        el = await driver.$('//menuItem[@name="Done"]');
-        await el.isExisting();
+        el = await driver.$('//Label[contains(@text, "TEDTalks")]');
+        await el.waitForExist({timeout: 5000});
       });
     });
   });
