@@ -1,17 +1,20 @@
 {
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "ts-node": {
+    "transpileOnly": true
+  },
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
-    "esModuleInterop": true,
     "declaration": true,
     "declarationMap": true,
     "emitDeclarationOnly": true,
-    "module": "es2022",
-    "moduleResolution": "node",
     "resolveJsonModule": true,
-    "target": "es2015",
-    "types": ["node", "mocha", "chai", "chai-as-promised", "sinon-chai", "webdriverio/async"],
+    "sourceMap": true,
+    "removeComments": false,
+    "strict": false,
+    "types": ["node", "mocha", "chai", "chai-as-promised", "sinon-chai"],
     "outDir": "build"
   },
   "include": ["lib"]
