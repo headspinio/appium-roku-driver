@@ -67,7 +67,7 @@
     "asyncbox": "2.9.4",
     "axios": "1.6.2",
     "blessed": "0.1.81",
-    "jimp": "0.16.13",
+    "jimp": "0.22.10",
     "js2xmlparser": "5.0.0",
     "lodash": "4.17.21",
     "lru-cache": "7.14.1",
