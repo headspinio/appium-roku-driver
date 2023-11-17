@@ -97,7 +97,7 @@
     "axios": "1.5.1",
     "babel-plugin-source-map-support": "2.2.0",
     "bluebird": "3.7.2",
-    "chai": "4.3.8",
+    "chai": "4.3.10",
     "chai-as-promised": "7.1.1",
     "eslint": "7.32.0",
     "eslint-plugin-import": "2.26.0",
