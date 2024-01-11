@@ -102,6 +102,7 @@ await driver.executeScript('roku: pressKey', [{key: 'Home'}])
 |`roku: getApps`||Get a list of apps installed on the device. The response will be a list of objects with the following keys: `id`, `type`, `subtype`, `version`, and `name`.|
 |`roku: activeApp`||Get information about the active app, in the same format as `roku: getApps`.|
 |`roku: activateApp`|`appId` (required), `contentId`, `mediaType`|Launch an app with the corresponding `appId`. Optionally include `contentId` and `mediaType` information (with the same properties as described above for the `activateApp` command)|
+|`roku: selectElement`|`elementId` (required) |Moves the focus on a element having locator xpath as `elementId`. If it is unable to focus on the element, the driver will respond with a error.|
 
 ## Contributing
 
