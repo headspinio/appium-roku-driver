@@ -130,6 +130,11 @@ describe('RokuDriver', function () {
       const info = await driver.executeScript('roku: deviceInfo', []);
       info['vendor-name'].should.eql('Roku');
     });
+    it('should be able to get player state', async function () {
+      const state = await driver.executeScript('roku: playerState', []);
+      state.player.error.should.eql('false');
+      state.plugin.name.should.exist;
+    });
     it('should be able to get app ui', async function () {
       await activateByName(APP_NAME);
       await driver
