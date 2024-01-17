@@ -64,7 +64,8 @@ describe('RokuDriver', function () {
   describe('sessions', function () {
     it('should start a session with no app', async function () {
       // relying on the before block above to have done this
-      await driver.executeScript('roku: activeApp', []).should.eventually.eql({name: 'Roku'});
+      const {name} = await driver.executeScript('roku: activeApp', []);
+      name.should.eql('Home');
     });
     it('should start a session with an app', async function () {
       // kill the existing session first

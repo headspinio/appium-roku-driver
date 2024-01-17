@@ -50,6 +50,7 @@ appium driver install --source=npm @headspinio/appium-roku-driver
 |`appium:rokuHost`|string|The host name or IP of the Roku device|Yes|
 |`appium:rokuEcpPort`|number|The ECP port on the Roku device (usually 8060)|Yes|
 |`appium:rokuWebPort`|number|The dev web interface port on the Roku device (usually 80)|Yes|
+|`appium:rokuWebCooldown`|number|Sometimes, multiple requests to the Roku web server in quick succession result in failures. By default the Appium driver waits 500ms before each request to the server to avoid this problem. You can tune this value (in ms) with this capability.|No|
 |`appium:rokuUser`|string|The username you selected when turning on dev mode|Yes|
 |`appium:rokuPass`|string|The password you selected when turning on dev mode|Yes|
 |`appium:rokuHeaderHost`|string|The IP of the Roku device on its local network (usually the same as `rokuHost` unless you are tunneling or connecting via DNS)|Yes|
