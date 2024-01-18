@@ -1,0 +1,10 @@
+<player state="play" error="false">
+<plugin id="dev" name="Channel" bandwidth="4812230 bps"/>
+<format audio="aac" video="mpeg4_10b" captions="webvtt" drm="widevine" container="dash"/>
+<buffering target="0" max="1000" current="1000"/>
+<new_stream speed="128000 bps"/>
+<position>12012 ms</position>
+<duration>10570977 ms</duration>
+<is_live blocked="false">false</is_live>
+<stream_segment media_sequence="2" time="8008" bitrate="545869" segment_type="video" width="480" height="202"/>
+</player>
