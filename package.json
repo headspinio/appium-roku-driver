@@ -1,6 +1,6 @@
 {
   "name": "@headspinio/appium-roku-driver",
-  "version": "2.5.1",
+  "version": "2.5.2",
   "description": "Appium driver for Roku channels",
   "keywords": [
     "appium",
