@@ -15,6 +15,11 @@ const APP_NAME = 'Hello World';
 const HERO_GRID_APP = path.resolve(FIXTURES, 'hero-grid-channel-master.zip');
 const HERO_GRID_NAME = 'HeroGridChannel';
 
+const DEEPLINK_APP = path.resolve(FIXTURES, 'deeplink-sample.zip');
+const DEEPLINK_NAME = 'FirstApp';
+
+const TWITCH_CONTENT_ID = '2c4e8ea1ad2f4a8d9d244f5dd4cc47b6';
+
 async function startSession(capabilities) {
   return await wdio({
     hostname: HOST,
@@ -153,6 +158,15 @@ describe('RokuDriver', function () {
       await driver
         .executeScript('roku: appUI', [])
         .should.eventually.be.rejectedWith(/No active app/);
+    });
+    it('should open to specific content by content id with deep link', async function () {
+      await driver.executeScript('roku: installApp', [{appPath: DEEPLINK_APP}]);
+      await activateByName(DEEPLINK_NAME);
+      await driver.executeScript('roku: deepLink', [{contentId: TWITCH_CONTENT_ID}]);
+      // the only way we know the video is playing instead of on the non deeplinked screen is
+      // that the video element has bounds and doesn't have visible set to false
+      const el = await driver.$('//Video[string-length(@bounds) > 0 and not(@visible="false")]');
+      await el.waitForExist({timeout: 5000});
     });
   });
 
