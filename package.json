@@ -41,19 +41,10 @@
     "fix": "npm run lint -- --fix",
     "lint": "eslint .",
     "reinstall": "npm run clean && npm ci",
-    "prepare": "husky install && npm run build:distfiles && npm run build:types || true",
+    "prepare": "npm run build:distfiles && npm run build:types || true",
     "test": "npm run test:unit",
     "test:e2e": "mocha --timeout 40s --slow 10s \"./test/functional/**/*.spec.js\"",
     "test:unit": "mocha \"./test/unit/**/*.spec.js\""
-  },
-  "lint-staged": {
-    "*.{md,yml,ts}": [
-      "prettier --write"
-    ],
-    "*.js": [
-      "eslint --fix",
-      "prettier --write"
-    ]
   },
   "prettier": {
     "bracketSpacing": false,
@@ -100,8 +91,6 @@
     "eslint-plugin-import": "2.29.1",
     "eslint-plugin-mocha": "10.3.0",
     "eslint-plugin-promise": "6.1.1",
-    "husky": "8.0.3",
-    "lint-staged": "13.3.0",
     "mocha": "10.3.0",
     "npm-run-all2": "5.0.2",
     "prettier": "3.2.5",
