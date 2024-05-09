@@ -65,7 +65,7 @@
     "@tsconfig/node14": "14.1.2",
     "@xmldom/xmldom": "0.8.10",
     "asyncbox": "2.9.4",
-    "axios": "1.6.7",
+    "axios": "1.6.8",
     "blessed": "0.1.81",
     "jimp": "0.22.10",
     "js2xmlparser": "5.0.0",
