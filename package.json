@@ -55,7 +55,7 @@
     "@appium/types": "0.14.2",
     "@tsconfig/node14": "14.1.2",
     "@xmldom/xmldom": "0.8.10",
-    "asyncbox": "2.9.4",
+    "asyncbox": "3.0.0",
     "axios": "1.6.8",
     "blessed": "0.1.81",
     "jimp": "0.22.10",
