@@ -1,5 +1,7 @@
 # Appium Roku Driver
 
+[![npm version](https://img.shields.io/npm/v/@headspinio/appium-roku-driver.svg)](https://www.npmjs.com/package/@headspinio/appium-roku-driver)
+
 This project is an Appium 2.x driver for automation of Roku channels (in the Roku world, "channel" means "app").
 
 ## Background
