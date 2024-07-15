@@ -70,7 +70,7 @@
   "devDependencies": {
     "@appium/eslint-config-appium": "8.0.5",
     "@babel/cli": "7.24.8",
-    "@babel/core": "7.24.8",
+    "@babel/core": "7.24.9",
     "@babel/preset-env": "7.24.8",
     "@babel/register": "7.24.6",
     "@types/babel__register": "7.17.3",
