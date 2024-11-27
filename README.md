@@ -72,7 +72,7 @@ The following table details the commands available via this driver. The command 
 |`getPageSource`||Return the XML representation of the current app hierarchy. Only available if the sideloaded dev app is active.|
 |`getScreenshot`||Return a base64-encoded string representing a PNG screenshot image. Only available if the sideloaded dev app is active.|`findElement`|`strategy`, `selector`|Find an element in the app hierarchy matching `selector`. Only the `xpath` strategy is supported. If no matching element is found, the driver will respond with a `NoSuchElement` error.|
 |`findElements`|`strategy`, `selector`|Find a (possibly-empty) list of elements in the app hierarchy matching `selector`. Only the `xpath` strategy is supported.|
-|`getCurrentContext`|| Return `NATIVE_APP` context. |
+|`getCurrentContext`|| Return `NATIVE_APP` context name. |
 
 
 ### Element Commands
