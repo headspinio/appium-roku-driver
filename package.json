@@ -97,7 +97,7 @@
     "rimraf": "5.0.9",
     "sinon": "18.0.0",
     "sinon-chai": "3.7.0",
-    "type-fest": "3.13.1",
+    "type-fest": "4.30.0",
     "typescript": "5.5.4",
     "webdriverio": "8.39.1"
   },
