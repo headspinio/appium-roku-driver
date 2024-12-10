@@ -91,7 +91,7 @@
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-mocha": "10.5.0",
     "eslint-plugin-promise": "6.6.0",
-    "mocha": "10.7.0",
+    "mocha": "10.8.2",
     "npm-run-all2": "6.2.6",
     "prettier": "3.3.3",
     "rimraf": "5.0.10",
