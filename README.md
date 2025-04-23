@@ -49,6 +49,7 @@ appium driver install --source=npm @headspinio/appium-roku-driver
 |`platformName`|string|Appium requires this. To activate this driver, it must be `Roku`|Yes|
 |`appium:automationName`|string|Appium requires this. To activate this driver, it must be `roku`|Yes|
 |`appium:app`|string|Absolute path to zip file of dev channel. If not included, a session will simply be started on the home screen|No|
+|`appium:newCommandTimeout` | number | How long (in seconds) the driver should wait for a new command from the client before assuming the client has stopped sending requests. After the timeout the session is going to be deleted. `60` seconds by default. Setting it to zero disables the timer. |No|
 |`appium:rokuHost`|string|The host name or IP of the Roku device|Yes|
 |`appium:rokuEcpPort`|number|The ECP port on the Roku device (usually 8060)|Yes|
 |`appium:rokuWebPort`|number|The dev web interface port on the Roku device (usually 80)|Yes|
