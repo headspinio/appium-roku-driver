@@ -52,7 +52,7 @@
     "singleQuote": true
   },
   "dependencies": {
-    "@appium/types": "0.14.2",
+    "@appium/types": "1.1.2",
     "@tsconfig/node14": "14.1.8",
     "@xmldom/xmldom": "0.9.0",
     "asyncbox": "3.0.0",
@@ -102,7 +102,7 @@
     "webdriverio": "8.46.0"
   },
   "peerDependencies": {
-    "appium": "^2.0.0"
+    "appium": "^2.0.0 || ^3.0.0"
   },
   "engines": {
     "node": ">=14",
