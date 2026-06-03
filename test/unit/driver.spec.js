@@ -31,4 +31,46 @@ describe('driver tests', function () {
       stream_segment: {media_sequence: '2', time: '8008', bitrate: '545869', segment_type: 'video', width: '480', height: '202'},
     });
   });
+
+  it('should expose raw ecp command via executeRoku', async function () {
+    const d = new RokuDriver({});
+    d.rokuEcp = function (url, method, body) {
+      url.should.eql('/query/device-info');
+      method.should.eql('GET');
+      body.should.eql('');
+      return {data: '<device-info />'};
+    };
+
+    const res = await d.executeRoku('ecp', {url: '/query/device-info', method: 'GET'});
+    res.should.eql('<device-info />');
+  });
+
+  it('should validate raw ecp command arguments', async function () {
+    const d = new RokuDriver({});
+    await d.executeRoku('ecp', {url: 'query/device-info'}).should.eventually.be.rejectedWith(
+      /must start with '\//
+    );
+  });
+
+  it('should long-press a key using keydown and keyup', async function () {
+    const d = new RokuDriver({});
+    const urls = [];
+    d.rokuEcp = function (url) {
+      urls.push(url);
+      return {data: ''};
+    };
+
+    await d.executeRoku('longPress', {key: 'Select', durationMs: 0});
+    urls.should.eql(['/keydown/Select', '/keyup/Select']);
+  });
+
+  it('should validate long-press arguments', async function () {
+    const d = new RokuDriver({});
+    await d.executeRoku('longPress', {key: 1}).should.eventually.be.rejectedWith(
+      /key must be a string/
+    );
+    await d.executeRoku('longPress', {key: 'Select', durationMs: -1}).should.eventually.be.rejectedWith(
+      /durationMs must be a non-negative number/
+    );
+  });
 });
